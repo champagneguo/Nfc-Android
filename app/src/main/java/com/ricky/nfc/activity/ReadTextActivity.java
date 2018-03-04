@@ -9,8 +9,11 @@ import android.nfc.tech.Ndef;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.widget.TextView;
+
 import com.ricky.nfc.R;
 import com.ricky.nfc.base.BaseNfcActivity;
+import com.ricky.nfc.tools.BytesHexStrTranslate;
+
 import java.util.Arrays;
 
 /**
@@ -20,13 +23,17 @@ import java.util.Arrays;
  */
 public class ReadTextActivity extends BaseNfcActivity {
     private TextView mNfcText;
+    private TextView mNfcUid;
     private String mTagText;
+    private String mTagUid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_read_text);
         mNfcText = (TextView) findViewById(R.id.tv_nfctext);
+        mNfcUid=(TextView)findViewById(R.id.tv_nfc_uid);
+
     }
 
     @Override
@@ -35,7 +42,9 @@ public class ReadTextActivity extends BaseNfcActivity {
         Tag detectedTag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
         //2.获取Ndef的实例
         Ndef ndef = Ndef.get(detectedTag);
-        mTagText = ndef.getType() + "\nmaxsize:" + ndef.getMaxSize() + "bytes\n\n";
+        mTagUid = BytesHexStrTranslate.bytesToHexFun2(detectedTag.getId());
+        mNfcUid.setText("UID:"+mTagUid);
+//        mTagText = ndef.getType() + "\nmaxsize:" + ndef.getMaxSize() + "bytes\n\n";
         readNfcTag(intent);
         mNfcText.setText(mTagText);
     }
