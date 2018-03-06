@@ -1,6 +1,8 @@
 package com.ricky.nfc.activity;
 
 import android.content.Intent;
+import android.content.res.AssetFileDescriptor;
+import android.media.MediaPlayer;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
@@ -14,6 +16,7 @@ import com.ricky.nfc.R;
 import com.ricky.nfc.base.BaseNfcActivity;
 import com.ricky.nfc.tools.BytesHexStrTranslate;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 /**
@@ -32,7 +35,7 @@ public class ReadTextActivity extends BaseNfcActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_read_text);
         mNfcText = (TextView) findViewById(R.id.tv_nfctext);
-        mNfcUid=(TextView)findViewById(R.id.tv_nfc_uid);
+        mNfcUid = (TextView) findViewById(R.id.tv_nfc_uid);
 
     }
 
@@ -43,10 +46,35 @@ public class ReadTextActivity extends BaseNfcActivity {
         //2.获取Ndef的实例
         Ndef ndef = Ndef.get(detectedTag);
         mTagUid = BytesHexStrTranslate.bytesToHexFun2(detectedTag.getId());
-        mNfcUid.setText("UID:"+mTagUid);
-//        mTagText = ndef.getType() + "\nmaxsize:" + ndef.getMaxSize() + "bytes\n\n";
+        mNfcUid.setText("UID:" + mTagUid);
+        if (ndef != null) {
+            mTagText = ndef.getType() + "\nmaxsize:" + ndef.getMaxSize() + "bytes\n\n";
+        }
         readNfcTag(intent);
         mNfcText.setText(mTagText);
+
+        playMedia();
+    }
+
+
+    /**
+     * 播放音乐
+     */
+    private void playMedia() {
+        try {
+            AssetFileDescriptor fileDescriptor = getAssets().openFd("1801.wav");
+
+            MediaPlayer mediaPlayer = new MediaPlayer();
+            mediaPlayer.setDataSource(fileDescriptor.getFileDescriptor(),
+                    fileDescriptor.getStartOffset(),
+                    fileDescriptor.getLength());
+            mediaPlayer.prepare();
+
+            mediaPlayer.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     /**
