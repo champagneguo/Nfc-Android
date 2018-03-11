@@ -22,7 +22,7 @@ public class MainActivity extends BaseNfcActivity {
     private TextView ifo_NFC;
     private static final String[] strs = new String[]{
             "自动打开短信界面",
-            "自动打开百度页面",
+            "自动打开网页页面",
             "读NFC标签中的文本数据",
             "写NFC标签中的文本数据",
             "读NFC标签中的Uri数据",
